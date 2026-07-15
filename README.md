@@ -21,14 +21,14 @@ This project is a small, deterministic console application. When run, it builds 
 
 The codebase consists of two Python modules:
 
-- **`app.py`** — the console entry point that orchestrates the workflow and writes to standard output. `Source: app.py:L1-L16`
-- **`service.py`** — a pure arithmetic utility module providing `calculate_total` and `calculate_average`. `Source: service.py:L1-L14`
+- **`app.py`** — the console entry point that orchestrates the workflow and writes to standard output. `Source: app.py:L1-L55`
+- **`service.py`** — a pure arithmetic utility module providing `calculate_total` and `calculate_average`. `Source: service.py:L1-L62`
 
 ## Architecture & Data Flow
 
-At runtime the operator invokes `app.py`, whose `main()` function delegates summation to `service.calculate_total()` and writes results to standard output. A second utility, `service.calculate_average()`, is defined and available but is **not currently called** by the application. `Source: service.py:L10-L14`
+At runtime the operator invokes `app.py`, whose `main()` function delegates summation to `service.calculate_total()` and writes results to standard output. A second utility, `service.calculate_average()`, is defined and available but is **not currently called** by the application. `Source: service.py:L36-L62`
 
-The single internal dependency edge is `app.py → service.calculate_total`, established by the unqualified import at `Source: app.py:L1`.
+The single internal dependency edge is `app.py → service.calculate_total`, established by the unqualified import at `Source: app.py:L18`.
 
 ### Component / Data-Flow Diagram
 
@@ -58,7 +58,7 @@ sequenceDiagram
 
 ## Requirements
 
-- **Python 3** — minimum **3.6** (the code uses an f-string, `Source: app.py:L8`); verified on **CPython 3.12.3**.
+- **Python 3** — minimum **3.6** (the code uses an f-string, `Source: app.py:L44`); verified on **CPython 3.12.3**.
 - **No third-party dependencies.** `service.py` imports nothing and `app.py` imports only the local `service` module. There is no `requirements.txt`, `pyproject.toml`, `setup.py`, or `package.json`, and no virtual environment or `pip install` step is required.
 
 ## Setup / Installation
@@ -66,7 +66,7 @@ sequenceDiagram
 No build or dependency-installation step is needed.
 
 1. Obtain the code (clone the repository or copy the files).
-2. Ensure `app.py` and `service.py` are in the **same directory** (co-located). `app.py` uses an unqualified import (`from service import calculate_total`, `Source: app.py:L1`), so the two files must sit side by side on the import path.
+2. Ensure `app.py` and `service.py` are in the **same directory** (co-located). `app.py` uses an unqualified import (`from service import calculate_total`, `Source: app.py:L18`), so the two files must sit side by side on the import path.
 3. Confirm Python 3 is available:
 
    ```bash
@@ -94,7 +94,7 @@ Total: 100
 Application completed
 ```
 
-The total `100` is the sum of `10 + 20 + 30 + 40`. `Source: app.py:L3-L13`
+The total `100` is the sum of `10 + 20 + 30 + 40`. `Source: app.py:L21-L51`
 
 ## API Documentation
 
@@ -108,7 +108,7 @@ This project exposes a **module/function API only — there is no HTTP/REST API*
 
 ### `service.calculate_total(numbers)`
 
-Returns the sum of a sequence of numbers, accumulating from `0`; returns `0` for an empty input. `Source: service.py:L1-L7`
+Returns the sum of a sequence of numbers, accumulating from `0`; returns `0` for an empty input. `Source: service.py:L14-L33`
 
 - **Parameters:** `numbers` — an iterable of numeric values.
 - **Returns:** the accumulated total.
@@ -123,7 +123,7 @@ Returns the sum of a sequence of numbers, accumulating from `0`; returns `0` for
 
 ### `service.calculate_average(numbers)`
 
-Returns the arithmetic mean of a sequence of numbers, or `0` for empty/falsy input (guarding against division by zero); computes `calculate_total(numbers) / len(numbers)`. **This function is defined and available but is not currently called anywhere in the codebase.** `Source: service.py:L10-L14`
+Returns the arithmetic mean of a sequence of numbers, or `0` for empty/falsy input (guarding against division by zero); computes `calculate_total(numbers) / len(numbers)`. **This function is defined and available but is not currently called anywhere in the codebase.** `Source: service.py:L36-L62`
 
 - **Parameters:** `numbers` — a sized iterable of numeric values (must support `len()`).
 - **Returns:** the arithmetic mean, computed with the input values' own division semantics — typically a `float` for built-in `int`/`float` inputs, while numeric types such as `Decimal` or `Fraction` preserve their own type; `0` when the input is empty or falsy.
@@ -138,7 +138,7 @@ Returns the arithmetic mean of a sequence of numbers, or `0` for empty/falsy inp
 
 ### `app.main()`
 
-Orchestrates the workflow: builds the fixed list, calls `calculate_total`, and prints the total, each value, and a completion message. Runs only under the `if __name__ == "__main__":` guard (`Source: app.py:L15-L16`); importing `app` does not execute it. `Source: app.py:L3-L13`
+Orchestrates the workflow: builds the fixed list, calls `calculate_total`, and prints the total, each value, and a completion message. Runs only under the `if __name__ == "__main__":` guard (`Source: app.py:L54-L55`); importing `app` does not execute it. `Source: app.py:L21-L51`
 
 - **Parameters:** none.
 - **Returns:** `None` (all output is a side effect on standard output).
@@ -150,46 +150,46 @@ Orchestrates the workflow: builds the fixed list, calls `calculate_total`, and p
 
 ## Inline Code Explanations
 
-Line numbers below reference the core executable statements of each module.
+The `# L#` labels below are the **physical line numbers** of each statement in the source files. To keep the walkthrough focused, the excerpts show only the executable statements — the module docstrings, function docstrings, and inline comments are omitted — so the numbering is intentionally non-contiguous (the gaps correspond to the omitted documentation lines).
 
 ### `app.py`
 
 ```python
-from service import calculate_total   # L1: import the summation helper from the local service module
+from service import calculate_total   # L18: import the summation helper from the local service module
 
-def main():                           # L3: define the entry-point function
-    numbers = [10, 20, 30, 40]        # L4: fixed input list (no external config/args)
+def main():                           # L21: define the entry-point function
+    numbers = [10, 20, 30, 40]        # L38: fixed input list (no external config/args)
 
-    total = calculate_total(numbers)  # L6: delegate summation to the service module -> 100
+    total = calculate_total(numbers)  # L41: delegate summation to the service module -> 100
 
-    print(f"Total: {total}")          # L8: print the aggregate total (f-string)
+    print(f"Total: {total}")          # L44: print the aggregate total (f-string)
 
-    for number in numbers:            # L10: iterate the original list...
-        print(number)                 # L11: ...printing each value on its own line
+    for number in numbers:            # L47: iterate the original list...
+        print(number)                 # L48: ...printing each value on its own line
 
-    print("Application completed")    # L13: print the completion marker
+    print("Application completed")    # L51: print the completion marker
 
-if __name__ == "__main__":            # L15: run main() only on direct execution
-    main()                            # L16
+if __name__ == "__main__":            # L54: run main() only on direct execution
+    main()                            # L55
 ```
 
 ### `service.py`
 
 ```python
-def calculate_total(numbers):         # L1: summation helper
-    total = 0                         # L2: accumulator starts at zero (=> 0 for empty input)
+def calculate_total(numbers):         # L14: summation helper
+    total = 0                         # L28: accumulator starts at zero (=> 0 for empty input)
 
-    for number in numbers:            # L4: iterate the input...
-        total += number               # L5: ...adding each value to the running total
+    for number in numbers:            # L30: iterate the input...
+        total += number               # L31: ...adding each value to the running total
 
-    return total                      # L7: return the accumulated sum
+    return total                      # L33: return the accumulated sum
 
 
-def calculate_average(numbers):       # L10: mean helper (currently unused)
-    if not numbers:                   # L11: guard empty/falsy input...
-        return 0                      # L12: ...return 0 instead of dividing by zero
+def calculate_average(numbers):       # L36: mean helper (currently unused)
+    if not numbers:                   # L59: guard empty/falsy input...
+        return 0                      # L60: ...return 0 instead of dividing by zero
 
-    return calculate_total(numbers) / len(numbers)   # L14: mean = total / count
+    return calculate_total(numbers) / len(numbers)   # L62: mean = total / count
 ```
 
 ## Deployment Guide
@@ -212,7 +212,7 @@ This is a standalone script with no packaging, container, or cloud configuration
 
 **`ModuleNotFoundError: No module named 'service'`**
 
-`app.py` imports `service` with an unqualified import (`Source: app.py:L1`). This error means Python cannot find `service.py` on the import path. Fix it by ensuring `service.py` is in the **same directory** as `app.py` and by running the program from that directory (`python3 app.py`).
+`app.py` imports `service` with an unqualified import (`Source: app.py:L18`). This error means Python cannot find `service.py` on the import path. Fix it by ensuring `service.py` is in the **same directory** as `app.py` and by running the program from that directory (`python3 app.py`).
 
 ## Project Structure
 
