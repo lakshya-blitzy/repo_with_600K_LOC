@@ -22,7 +22,7 @@ This project is a small, deterministic console application. When run, it builds 
 The codebase consists of two Python modules:
 
 - **`app.py`** — the console entry point that orchestrates the workflow and writes to standard output. `Source: app.py:L1-L16`
-- **`service.py`** — a pure arithmetic utility module providing `calculate_total` and `calculate_average`. `Source: service.py:L1-L15`
+- **`service.py`** — a pure arithmetic utility module providing `calculate_total` and `calculate_average`. `Source: service.py:L1-L14`
 
 ## Architecture & Data Flow
 
@@ -126,7 +126,7 @@ Returns the sum of a sequence of numbers, accumulating from `0`; returns `0` for
 Returns the arithmetic mean of a sequence of numbers, or `0` for empty/falsy input (guarding against division by zero); computes `calculate_total(numbers) / len(numbers)`. **This function is defined and available but is not currently called anywhere in the codebase.** `Source: service.py:L10-L14`
 
 - **Parameters:** `numbers` — a sized iterable of numeric values (must support `len()`).
-- **Returns:** the mean as a float, or `0` when the input is empty.
+- **Returns:** the arithmetic mean, computed with the input values' own division semantics — typically a `float` for built-in `int`/`float` inputs, while numeric types such as `Decimal` or `Fraction` preserve their own type; `0` when the input is empty or falsy.
 - **Example:**
 
   ```python
