@@ -197,7 +197,7 @@ def calculate_average(numbers):       # L36: mean helper (currently unused)
 This is a standalone script with no packaging, container, or cloud configuration.
 
 - **Prerequisite:** a Python 3 interpreter (3.6+; verified on 3.12.3).
-- **Invocation model:** run directly with `python3 app.py` from the directory that contains both `app.py` and `service.py`.
+- **Invocation model:** run directly with `python3 app.py` from the directory that contains both `app.py` and `service.py`; direct execution is enabled by the `if __name__ == "__main__":` guard, which calls `main()`. `Source: app.py:L54-L55`
 - **No packaging:** there is no wheel/`setup.py`/`pyproject.toml` build, no `Dockerfile`/container image, and no cloud or CI deployment configuration in the repository.
 - **Optional containerization** (illustrative only — not part of the repository): a minimal image could copy both modules and run them, for example:
 
