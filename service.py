@@ -50,8 +50,11 @@ def calculate_average(numbers):
             whose mean is computed.
 
     Returns:
-        The arithmetic mean (a float) of the values in ``numbers``; ``0`` when
-        ``numbers`` is empty or otherwise falsy.
+        The arithmetic mean of the values in ``numbers``, computed with the
+        input's own division semantics (typically a ``float`` for built-in
+        ``int``/``float`` inputs, while numeric types such as ``Decimal`` or
+        ``Fraction`` preserve their own type); ``0`` when ``numbers`` is empty
+        or otherwise falsy.
     """
     if not numbers:
         return 0
